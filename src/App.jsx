@@ -1,4 +1,5 @@
 import { Routes, Route} from 'react-router-dom';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './components/nav/NavBar';
 import Footer from './components/footer/Footer';
@@ -10,7 +11,7 @@ import Statistics from './pages/resources/statistics/Statistics';
 import Edu from './components/cards/Edu';
 import EduVideo from './components/cards/EduVideo';
 
-import Help from './pages/help/Help';
+import About from './pages/About/About';
 import Counselling from './pages/resources/counselling/Counselling';
 import LiveReport from './components/forms/LiveReport';
 import VictimForm from './components/forms/VictimForm';
@@ -33,7 +34,7 @@ const App = () => {
           <Route path="/Counselling" element={<Counselling/>} />
           <Route path="/Statistics" element={<Statistics/>} />
           <Route path='/Admin' element={<Admin/>}/>
-          <Route path="/Help" element={<Help/>} />
+          <Route path="/About" element={<About/>} />
         </Routes>
         <Footer />
       </div>
