@@ -4,6 +4,7 @@ import VideoMedia from '../Media/VideoMedia'
 
 const VictimForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
+    victimName:"",
     abuserName: "",
     location: "",
     storyText: "",
@@ -65,6 +66,10 @@ const VictimForm = ({ onSubmit }) => {
         <h3 className="text-center">Victim's Reporting Form</h3>
       </div>
       <form onSubmit={handleSubmit} className='m-3 p-4'>
+      <div className="input-group mb-3">
+          <span className="input-group-text" id="abuserName">Your Name</span>
+          <input type="text" name="victimName" className="form-control" placeholder="" aria-label="victimName" value={formData.victimName} onChange={handleChange} aria-describedby="basic-addon1" />
+        </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="abuserName">Abuser's name</span>
           <input type="text" name="abuserName" className="form-control" placeholder="" aria-label="abuserName" value={formData.abuserName} onChange={handleChange} aria-describedby="basic-addon1" />
