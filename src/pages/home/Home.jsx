@@ -4,6 +4,8 @@ import Carousel from '../../components/cards/Carousel';
 import { useSprings, animated, to as interpolate } from '@react-spring/web';
 import { useDrag } from 'react-use-gesture';
 import styles from './style.module.css';
+import {useTransition,useSpring,useChain,config,animated as animatedRS,useSpringRef,} from '@react-spring/web';
+import data from './data';
 
 const HomeMid = ({ iconMid, titleMid, desMid, refMid }) => {
   return (
@@ -23,6 +25,52 @@ const HomeMid = ({ iconMid, titleMid, desMid, refMid }) => {
     </div>
   );
 };
+
+
+
+
+// Convert your React Spring component to a function component
+function SpringAnimation() {
+  const [open, set] = useState(false);
+
+  const springApi = useSpringRef();
+  const { size, ...rest } = useSpring({
+    ref: springApi,
+    config: config.stiff,
+    from: { size: '20%', background: 'hotpink' },
+    to: {
+      size: open ? '100%' : '20%',
+      background: open ? 'white' : 'hotpink',
+    },
+  });
+
+  const transApi = useSpringRef();
+  const transition = useTransition(open ? data : [], {
+    ref: transApi,
+    trail: 400 / data.length,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+  });
+
+  useChain(open ? [springApi, transApi] : [transApi, springApi], [0, open ? 0.1 : 0.6]);
+
+  return (
+    <div className={styles.wrapper}>
+      <animatedRS.div
+        style={{ ...rest, width: size, height: size }}
+        className={styles.container1}
+        onClick={() => set(open => !open)}>
+        {transition((style, item) => (
+          <animatedRS.div
+            className={styles.item}
+            style={{ ...style, background: item.css }}
+          />
+        ))}
+      </animatedRS.div>
+    </div>
+  );
+}
 
 const cards = [
   'https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg',
@@ -97,35 +145,35 @@ function Deck() {
 }
 
 const Home = () => {
+  const [open, set] = useState(false)
+
   return (
     <div>
       <div>
         <div>
              <Carousel />
              </div>
-          <div className="m-2 row rounded-end p-5 bg-success">
-            <div className="col-4">
-              <h2>MUT SGBV Hotline Free Confidnetial.24/7. </h2>{' '}
-            </div>
+          <div className="m-2 row rounded-end p-5 bg-secondary  ">
+          
             <div className="mb-3 row rounded-end p-3">
-              <div className="col-4">
+              <div className=" col-sm-12 col-mb-4 text-primary">
                 <h2>MUT SGBV Hotline Free Confidnetial.24/7. </h2>{' '}
               </div>
-              <div className="col-4 text-center mt-5">
-                <button className="btn btn-secondary p-4">
-                  <p className="h4">
-                    call{' '}
-                    <Link href="tel:0800724635" className="text-dark">
+              <div className=" col-sm-6 col-mb-4 text-center border border-primary-subtle rounded-3 mt-5 text-primary">
+                <button className="btn  p-4">
+                  <p className="h4 text-primary">
+                    Toll Free Line
+                    <Link to="tel:0800724635" className="m-4">
                       0800724635
-                    </Link>{' '}
+                    </Link>
                   </p>
-                  toll free
+                  
                 </button>
               </div>
-              <div className="col-4 text-center mt-5 ">
+              <div className=" col-sm-6 col-mb-4 text-center border border-primary-subtle rounded-3 mt-5 ">
                 <button className="btn btn-secondary p-4">
                   <p className="h4">
-                    <Link to="/report" className="text-dark">
+                    <Link to="/report" className="text-primary">
                       Get Help
                     </Link>
                   </p>{' '}
@@ -134,13 +182,20 @@ const Home = () => {
             </div>
           </div>
           <div className='d-flex justify-content-center'>
-        <div  className='m-2 row p-5' style={{width:'100rem', height:'100rem'}} >
-       <Deck/>
-       
-        </div>
-        </div>
-         
-        
+            <div  className='m-2 row p-5 border' style={{width:'100rem', height:'70rem'}} >
+              <div className='col-mb-6 col-sm-12 border m-4'>
+              <Deck/>
+              </div>
+              <div className='col-mb-6 col-sm-12 border m-4 ' style={{height:'20rem'}}>
+            < SpringAnimation/>
+            </div>
+            </div>
+            
+            
+            <div className="m-2">
+             
+            </div>
+          </div>
       </div>
     </div>
   );

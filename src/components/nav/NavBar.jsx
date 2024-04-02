@@ -27,7 +27,7 @@ const NavBar = () => {
   return (
     <div>
       <div>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+        <nav className="navbar navbar-expand-lg bg-body-primary sticky-top">
           <div className="container-fluid" ref={navRef}>
             <Link to='/' className='navbar-brand link-dark fw-bold text-decoration-none'>Usikimye</Link>
             <button className="navbar-toggler" type="button" onClick={toggleMenu}>

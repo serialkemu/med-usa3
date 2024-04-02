@@ -21,7 +21,7 @@ import WitnessForm from './components/forms/WitnessForm';
 
 const App = () => {
   return (
-      <div className='bg-transparent'>
+      <div className='bg-primary'>
         <NavBar />
         <Routes>
           <Route path="/" element={<Home/>} />

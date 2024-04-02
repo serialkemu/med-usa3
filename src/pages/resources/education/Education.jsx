@@ -2,6 +2,7 @@ import React from 'react'
 import EduVideo from '../../../components/cards/EduVideo'
 import Edu from '../../../components/cards/Edu'
 import edu1 from '../../../assets/images/edu1.png'
+import edu2 from '../../../assets/images/edu2.png';
 import { Link } from 'react-router-dom'
 
 
@@ -22,7 +23,7 @@ const Education = () => {
     </div>
     <div className="row g-0">
       <div className="col-md-3 col-sm-2">
-        <img src={edu1} className="img-fluid rounded-start" alt="..." />
+        <img src={edu2} className="img-fluid rounded-start" alt="..." />
       </div>
       <div className="col-md-9 col-sm-10">
         <div className="card-body">
