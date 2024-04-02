@@ -60,7 +60,7 @@ const VictimForm = ({ onSubmit }) => {
   }
 
   return (
-    <div className='container bg-success p-5 m-3'>
+    <div className='container p-5 m-3'>
       <div>
         <h3 className="text-center">Victim's Reporting Form</h3>
       </div>

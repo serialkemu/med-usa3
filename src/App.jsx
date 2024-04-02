@@ -10,6 +10,7 @@ import Education from './pages/resources/education/Education';
 import Statistics from './pages/resources/statistics/Statistics';
 import Edu from './components/cards/Edu';
 import EduVideo from './components/cards/EduVideo';
+import CaseFiles from './admin/CaseFiles';
 
 import About from './pages/About/About';
 import Counselling from './pages/resources/counselling/Counselling';
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/Statistics" element={<Statistics/>} />
           <Route path='/Admin' element={<Admin/>}/>
           <Route path="/About" element={<About/>} />
+          <Route path="/CaseFiles" element={<CaseFiles/>} />
         </Routes>
         <Footer />
       </div>

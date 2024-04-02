@@ -55,7 +55,7 @@ const NavBar = () => {
                  <Link to="/about" className='nav-link link-dark fw-bold text-decoration-none'>About</Link>
                 </li>
               </ul>
-              <div>
+              <div className='m-3'>
               <Link  to="./Admin"><img src={user} style={{height:"1.9rem"}}/></Link>
               </div>
              
