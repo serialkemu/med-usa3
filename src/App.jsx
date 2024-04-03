@@ -22,7 +22,7 @@ import VideoRecorder from './components/Media/AudioRecorder';
 
 const App = () => {
   return (
-      <div className='bg-transparent'>
+      <div className='bg-primary'>
         <NavBar />
         <Routes>
           <Route path="/" element={<Home/>} />
