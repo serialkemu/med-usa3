@@ -18,6 +18,7 @@ import LiveReport from './components/forms/LiveReport';
 import VictimForm from './components/forms/VictimForm';
 import WitnessForm from './components/forms/WitnessForm';
 import VideoRecorder from './components/Media/AudioRecorder';
+import CyberbullyForm from './components/forms/Cyberbully';
 
 
 const App = () => {
@@ -37,7 +38,7 @@ const App = () => {
           <Route path="/Statistics" element={<Statistics/>} />
           <Route path='/Admin' element={<Admin/>}/>
           <Route path="/About" element={<About/>} />
-          <Route path="/CaseFiles" element={<CaseFiles/>} />
+          <Route path="/CyberbullyForm" element={<CyberbullyForm/>} />
           <Route path="/audio" element={<VideoRecorder/>} />
           
         </Routes>

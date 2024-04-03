@@ -1,15 +1,46 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import LiveReportCard from './components/liveReportCard';
 
-
-const Admin = (
-) => {
+const Admin = () => {
   const [activeTab, setActiveTab] = useState('liveReports');
   const [liveReportsData, setLiveReportsData] = useState(null);
   const [victimsReportsData, setVictimsReportsData] = useState(null);
   const [witnessReportsData, setWitnessReportsData] = useState(null);
   const [cyberbullyingReportsData, setCyberbullyingReportsData] = useState(null);
+
+  useEffect(() => {
+    async function fetchLiveReportsData() {
+      try {
+        const response = await fetch('http://localhost:5001/admin/liveReports');
+        const liveReports = await response.json();
+        setLiveReportsData(
+          liveReports.length
+            ? liveReports.map((report) => <LiveReportCard {...report} />)
+            : null
+        );
+      } catch (error) {
+        console.error('Error fetching live reports data:', error);
+      }
+    }
+
+    fetchLiveReportsData();
+  }, []);
+
+  useEffect(() => {
+    // Add fetch logic for victims reports data
+  }, []);
+
+  useEffect(() => {
+    // Add fetch logic for witness reports data
+  }, []);
+
+  useEffect(() => {
+    // Add fetch logic for cyberbullying reports data
+  }, []);
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+  };
 
   const liveReportsContent = (
     <div>
@@ -17,64 +48,30 @@ const Admin = (
       {liveReportsData}
     </div>
   );
-
   const victimsReportsContent = (
     <div>
       <h3>Victims Reports</h3>
-      {/* Your victims reports content here */}
+      {victimsReportsData}
     </div>
   );
-
   const witnessReportsContent = (
     <div>
-      <h3>Witness Reports</h3>
-      {/* Your witness reports content here */}
+      <h3>Witnesses Reports</h3>
+      {witnessReportsData}
     </div>
   );
-
   const cyberbullyingReportsContent = (
     <div>
-      <h3>Cyberbullying Reports</h3>
-      {/* Your cyberbullying reports content here */}
+      <h3>Live Reports</h3>
+      {cyberbullyingReportsData}
     </div>
   );
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get('/liveReports');
-      const liveReports = response.data;
-      setLiveReportsData(
-        liveReports.length ? liveReports.map((report) => <LiveReportCard {...report} />) : null
-      );
-    }
-
-    fetchData();
-  }, []);
-  // Fetch victims reports data
-  useEffect(() => {
-    // ...
-  }, []);
-
-  // Fetch witness reports data
-  useEffect(() => {
-    // ...
-  }, []);
-
-  // Fetch cyberbullying reports data
-  useEffect(() => {
-    // ...
-  }, []);
-
-  const handleTabChange = (newTab) => {
-    setActiveTab(newTab);
-  };
-
   const content = {
-    liveReports: liveReportsContent,
-    victimsReports: victimsReportsData,
-    witnessReports: witnessReportsData,
-    cyberbullyingReports: cyberbullyingReportsData,
-  };
+      liveReports: liveReportsContent,
+      victimsReports: victimsReportsContent,
+      witnessReports: witnessReportsContent,
+      cyberbullyingReports: cyberbullyingReportsContent,
+    };
 
   return (
     <div>
@@ -84,7 +81,7 @@ const Admin = (
         <button onClick={() => handleTabChange('witnessReports')}>Witness Reports</button>
         <button onClick={() => handleTabChange('cyberbullyingReports')}>Cyberbullying Reports</button>
       </div>
-      <div className="content">{content}</div>
+      <div className="content">{content[activeTab]}</div>
     </div>
   );
 }

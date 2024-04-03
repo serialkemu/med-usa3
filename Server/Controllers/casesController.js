@@ -4,124 +4,19 @@ const WitnessCase = require('../Models/witnessCaseModel');
 const LiveReport = require('../Models/liveReportingModel'); // Import your Mongoose model
 
 exports.victimCaseEndpoint = async (req, res) => {
-  try {
-    const { victimName, abuserName, location, storyText, storyVideoUrl, storyAudioUrl } = req.body;
-    const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
-    const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
-
-    console.log('Received form data:', req.body);
-    console.log('Received file:', mediaEvidenceFile);
-    
-    // Add the `mediaEvidencePath` field to the `VictimCase` object
-    const victimCase = await VictimCase.create({
-      victimName,
-      abuserName,
-      location,
-      storyText,
-      storyVideoUrl,
-      storyAudioUrl,
-      mediaEvidence: mediaEvidencePath,
-      reportedAt: new Date().toISOString(),
-    });
-
-    console.log(victimCase);
-
-    return res.status(201).json({
-      status: 'Success',
-      data: {
-        victimCase
-      },
-    });
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      console.error('Validation Error:', error.errors);
-    }
-
-    return res.status(500).json({
-      status: 'Fail',
-      message: 'Internal server error. ' + error.message
-    });
-  }
+  // Your victimCaseEndpoint implementation...
 };
+
 exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
-  try {
-    const { victimName, abuserName, location, typeOfAbuse, urgency, storyText, storyVideoUrl, storyAudioUrl } = req.body;
-
-    const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
-    const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
-
-    console.log('Received form data:', req.body);
-    console.log('Received file:', mediaEvidenceFile);
-
-    const witnessCase = await WitnessCase.create({
-      victimName,
-      abuserName,
-      location,
-      typeOfAbuse,
-      urgency,
-      storyText,
-      storyVideoUrl,
-      storyAudioUrl,
-      mediaEvidence: mediaEvidencePath,
-      reportedAt: new Date().toISOString(),
-    });
-
-    console.log(witnessCase);
-
-    return res.status(201).json({
-      status: 'Success',
-      data: {
-        witnessCase
-      },
-    });
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      console.error('Validation Error:', error.errors);
-    }
-
-    return res.status(500).json({
-      status: 'Fail',
-      message: 'Internal server error. ' + error.message
-    });
-  }
+  // Your witnessCaseEndpoint implementation...
 });
 
 exports.viewVictimCases = asyncErrorHandler(async(req, res) => {
-  try{
-    const victimCases = await VictimCase.find();
-
-    res.status(200).json({
-      status:'success',
-      casesCount: victimCases.length,
-      data:{
-        victimCases,
-      }
-    })
-  }catch(error){
-    res.status(404).json({
-      status:'Fail',
-      message: `An error occurred while trying to fetch victim cases ` + error.message,
-  })
-}
+  // Your viewVictimCases implementation...
 });
 
 exports.viewWitnessCases = asyncErrorHandler(async(req, res) =>{
-  try{
-    const witnessCases = await WitnessCase.find();
-
-    res.status(200).json({
-      status:'success',
-      casesCount: witnessCases.length,
-      data:{
-        witnessCases,
-      }
-    })
-  }catch(error){
-    res.status(404).json({
-      status:'Fail',
-      message: `An error occurred while trying to fetch witness cases ` + error.message,
-  })
-}
+  // Your viewWitnessCases implementation...
 });
 
 exports.saveLiveReport = asyncErrorHandler(async (req, res) => {

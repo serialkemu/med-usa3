@@ -4,6 +4,7 @@ import VictimForm from '../../components/forms/VictimForm';
 import LiveReport from '../../components/forms/LiveReport'
 import WitnessForm from '../../components/forms/WitnessForm';
 import ReportCard from './ReportCard';
+import Cyberbully from '../../components/forms/Cyberbully';
 import witness from '../../assets/images/witness.png';
 import victim from '../../assets/images/victim.png';
 import urgent from '../../assets/images/urgent.png';
@@ -89,7 +90,7 @@ const Report = () => {
           <div className="card-body">
             <h5 className="card-title">Cyber Crime</h5>
             <p className="card-text">Report a cyber bully</p>
-            <Link to='/WitnessForm' className='btn btn-secondary'>Unmask the keyboard warrior </Link>
+            <Link to='/CyberbullyForm' className='btn btn-secondary'>Unmask the keyboard warrior </Link>
            
           </div>
         </div>
