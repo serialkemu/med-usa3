@@ -128,6 +128,7 @@ const WitnessForm = ({ onSubmit }) => {
         <button
           className='btn btn-secondary mt-2'
           type="submit"
+          onClick={handleSubmit}
         >
           Submit
         </button>

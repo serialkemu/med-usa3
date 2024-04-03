@@ -50,7 +50,7 @@ const LiveReportCard = ({ _id, audioUrl, videoUrl, reportedAt }) => {
         <div>
           <audio
             controls
-            src={audioUrl} // Set audio source dynamically
+            src="http://localhost:5173/uploads/witnesses/1712171941974-16853052.wav" // Set audio source dynamically
             type="audio/mpeg"
             ref={audioRef}
           >
