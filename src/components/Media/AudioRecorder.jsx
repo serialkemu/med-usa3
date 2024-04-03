@@ -1,57 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
-const AudioRecorder = () => {
+const AudioRecorder = ({ onStopRecording }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [audioStream, setAudioStream] = useState(null);
+  const [mediaStream, setMediaStream] = useState(null);
+  const mediaRecorderRef = useRef(null);
   const [audioChunks, setAudioChunks] = useState([]);
 
-  const startRecording = async () => {
+  const handleStartRecording = async (e) => {
+    e.preventDefault(); // Prevent form submission
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setAudioStream(stream);
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.addEventListener('dataavailable', handleDataAvailable);
-      mediaRecorder.start();
+      setMediaStream(stream);
       setIsRecording(true);
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error("Error accessing media devices:", error);
     }
   };
 
-  const stopRecording = () => {
-    audioStream.getTracks().forEach(track => track.stop());
+  const handleStopRecording = async () => {
     setIsRecording(false);
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+
+    // Call onStopRecording only once when recording stops
+    const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+    const audioURL = URL.createObjectURL(audioBlob);
+    console.log("Recorded audio URL:", audioURL);
+    if (typeof onStopRecording === 'function') {
+      console.log("Calling onStopRecording with URL:", audioURL); // Add this line
+
+      onStopRecording(audioURL);
+    }
   };
 
-  const handleDataAvailable = (event) => {
-    setAudioChunks([...audioChunks, event.data]);
-  };
+  useEffect(() => {
+    if (!isRecording || !mediaStream) return;
 
-  const downloadRecording = () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-    const url = URL.createObjectURL(audioBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'recording.wav';
-    document.body.appendChild(link);
-    link.click();
-    URL.revokeObjectURL(url);
-  };
+    const chunks = [];
+
+    mediaRecorderRef.current = new MediaRecorder(mediaStream);
+
+    mediaRecorderRef.current.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        chunks.push(event.data);
+        setAudioChunks([...chunks]);
+        console.log("Chunk array length:", chunks.length);
+      }
+    };
+
+    mediaRecorderRef.current.onstop = () => {
+      // Do nothing here
+    };
+
+    mediaRecorderRef.current.start();
+
+    return () => {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, [isRecording, mediaStream]);
 
   return (
     <div>
-      <h4>Audio Recorder</h4>
-      <p>Tell using your own words</p>
-      <div>
-        {isRecording ? (
-          <button onClick={stopRecording} className='btn btn-info'>Stop Recording</button>
-        ) : (
-          <button onClick={startRecording} className='btn btn-info'>Start Recording</button>
-        )}
-        {audioChunks.length > 0 && (
-          <button onClick={downloadRecording} className='btn btn-info'>Download Recording</button>
-        )}
-      </div>
+      <button onClick={handleStartRecording} disabled={isRecording}>
+        Start recording
+      </button>
+      {isRecording && <span>Recording...</span>}
+      {isRecording && (
+        <button onClick={handleStopRecording}>Stop recording</button>
+      )}
     </div>
   );
 };

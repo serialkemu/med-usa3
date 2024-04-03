@@ -1,66 +1,102 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
-const VideoMedia = ({ onSave }) => {
+const VideoRecorder = ({ onStopRecording }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [recordedChunks, setRecordedChunks] = useState([]);
-  const videoRef = useRef();
+  const [mediaStream, setMediaStream] = useState(null);
+  const videoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const [videoChunks, setVideoChunks] = useState([]);
+  const divRef = useRef(null);
 
-  const startRecording = async () => {
+  const handleStartRecording = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
-      videoRef.current.play();
-
-      const recorder = new MediaRecorder(stream);
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setRecordedChunks((prev) => [...prev, event.data]);
-        }
-      };
-      recorder.start();
-      setMediaRecorder(recorder);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      setMediaStream(stream);
       setIsRecording(true);
     } catch (error) {
-      console.error('Error accessing media devices:', error);
+      console.error("Error accessing media devices:", error);
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-      setIsRecording(false);
+  const handleStopRecording = async () => {
+    setIsRecording(false);
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      setMediaStream(null);
+    }
+
+    // Save the recording when stopped
+    handleSaveRecording();
+  };
+
+  const handleSaveRecording = () => {
+    const videoBlob = new Blob(videoChunks, { type: "video/webm" });
+    const videoURL = URL.createObjectURL(videoBlob);
+    console.log("Recorded video URL:", videoURL);
+    if (typeof onStopRecording === 'function') {
+      onStopRecording(videoURL);
     }
   };
 
-  const handleSave = () => {
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-    onSave(blob); // Pass the recorded video to the parent component
-    setRecordedChunks([]); // Clear recorded chunks after saving
-  };
+  useEffect(() => {
+    if (!isRecording || !mediaStream) return;
+
+    const chunks = [];
+
+    mediaRecorderRef.current = new MediaRecorder(mediaStream, {
+      mimeType: "video/webm",
+    });
+
+    mediaRecorderRef.current.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        chunks.push(event.data);
+        setVideoChunks([...chunks]);
+        console.log("Chunk array length:", chunks.length);
+      }
+    };
+
+    mediaRecorderRef.current.onstop = () => {
+      // Do nothing here
+    };
+
+    mediaRecorderRef.current.start();
+
+    return () => {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, [isRecording, mediaStream, onStopRecording]);
+
+  useEffect(() => {
+    if (mediaStream && videoRef.current) {
+      videoRef.current.srcObject = mediaStream;
+    }
+  }, [mediaStream]);
 
   return (
-    <div className='video-container m-2'>
-      <div>You can record a video real quick</div>
-      <div className='video-wrapper'>
-        <video ref={videoRef} style={{ width: '300px' }} muted></video>
-      </div>
-      <div className='button-container gap-2 p-3'>
-        {isRecording ? (
-          <button onClick={stopRecording} className='btn btn-secondary'>Stop Recording</button>
-        ) : (
-          <>
-            <button onClick={startRecording} className='btn btn-secondary'>Start Recording</button>
-            {recordedChunks.length > 0 && (
-              <button onClick={handlePreview} className='btn btn-secondary'>Preview</button>
-            )}
-          </>
-        )}
-        <button onClick={handleSave} disabled={recordedChunks.length === 0} className='btn btn-info'>Save Recording</button>
-      </div>
+    <div>
+      <button onClick={handleStartRecording} disabled={isRecording}>
+        Start recording
+      </button>
+      {isRecording && (
+        <button onClick={handleStopRecording}>Stop recording</button>
+      )}
+      {mediaStream && (
+        <div ref={divRef}>
+          <video ref={videoRef} autoPlay />
+        </div>
+      )}
     </div>
   );
 };
 
-export default VideoMedia;
+export default VideoRecorder;
