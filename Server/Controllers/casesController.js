@@ -45,10 +45,13 @@ exports.victimCaseEndpoint = async (req, res) => {
 };
 exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
   try {
-    const { victimName, abuserName, location, typeOfAbuse, urgency, backgroundStory } = req.body;
+    const { victimName, abuserName, location, typeOfAbuse, urgency, storyText, storyVideoUrl, storyAudioUrl } = req.body;
 
-    const mediaEvidenceFiles = req.files || [];
-    const mediaEvidencePaths = mediaEvidenceFiles.map(file => file.path);
+    const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
+    const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
+
+    console.log('Received form data:', req.body);
+    console.log('Received file:', mediaEvidenceFile);
 
     const witnessCase = await WitnessCase.create({
       victimName,
@@ -56,9 +59,11 @@ exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
       location,
       typeOfAbuse,
       urgency,
-      backgroundStory,
-      mediaEvidence: mediaEvidencePaths,
-      reportedAt: currentTime.toISOString(), 
+      storyText,
+      storyVideoUrl,
+      storyAudioUrl,
+      mediaEvidence: mediaEvidencePath,
+      reportedAt: new Date().toISOString(),
     });
 
     console.log(witnessCase);
@@ -119,28 +124,49 @@ exports.viewWitnessCases = asyncErrorHandler(async(req, res) =>{
 }
 });
 
-exports.liveReport = asyncErrorHandler(async (req, res) => {
+exports.saveLiveReport = asyncErrorHandler(async (req, res) => {
   try {
-    // Extract audioUrl and videoUrl from the request body
-    const { audioUrl, videoUrl } = req.body;
-    // Create a new report document using your Mongoose model
-    const newReport = new LiveReport({
-      audioUrl,
-      videoUrl
-      // Add other fields as needed
+    const { storyVideoUrl, storyAudioUrl } = req.body;
+    
+    // Process the received URLs (e.g., save them to a database, perform further operations)
+    
+    console.log('Received video URL:', storyVideoUrl);
+    console.log('Received audio URL:', storyAudioUrl);
+    
+    // Create a new LiveReport object with the received URLs and current timestamp
+    const liveReport = await LiveReport.create({
+      storyVideoUrl,
+      storyAudioUrl,
+      reportedAt: new Date().toISOString(),
     });
-    // Save the report to the database
-    await newReport.save();
-    // Respond with success message
+
+    console.log(liveReport)
+
     return res.status(201).json({
       status: 'Success',
-      message: 'Report saved successfully'
+      message: 'Live report saved successfully',
+      data: {
+        liveReport
+      },
     });
   } catch (error) {
-    console.error('Error saving report:', error);
+    console.error('Error saving live report:', error.message);
     return res.status(500).json({
       status: 'Fail',
       message: 'Internal server error. ' + error.message
     });
+  }
+});
+
+exports.getLiveReports = asyncErrorHandler(async (req, res) => {
+  try {
+    const liveReports = await LiveReport.find({});
+    if (liveReports.length === 0) {
+      return res.status(400).send('No live reports found.');
+    }
+
+    return res.status(200).send(liveReports);
+  } catch (error) {
+    return res.status(500).send('Server error.');
   }
 });

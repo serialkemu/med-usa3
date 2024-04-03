@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import AudioRecorder from '../Media/AudioRecorder';
 import VideoRecorder from '../Media/VideoMedia';
 
-
-
-
 const VictimForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     victimName: "",
@@ -40,26 +37,18 @@ const VictimForm = ({ onSubmit }) => {
     e.preventDefault();
 
     try {
-      console.log("Form data before submission:", formData);
+      const formDataToSend = new FormData();
+      formDataToSend.append('victimName', formData.victimName || '');
+      formDataToSend.append('abuserName', formData.abuserName || '');
+      formDataToSend.append('location', formData.location || '');
+      formDataToSend.append('storyText', formData.storyText || '');
+      formDataToSend.append('storyVideoUrl', formData.storyVideoUrl || '');
+      formDataToSend.append('storyAudioUrl', formData.storyAudioUrl || '');
+      formDataToSend.append('mediaEvidence', formData.mediaEvidence);
 
-      const formDataToSend = {
-        victimName: formData.victimName || '',
-        abuserName: formData.abuserName || '',
-        location: formData.location || '',
-        storyText: formData.storyText || '',
-        storyVideoUrl: formData.storyVideoUrl || null,
-        storyAudioUrl: formData.storyAudioUrl || null,
-        mediaEvidence: formData.mediaEvidence || null
-      };
-  
-      console.log("Form data to send:", formDataToSend);
-  
       const response = await fetch("http://localhost:5001/cases/victimCase", {
         method: "POST",
-        body: JSON.stringify(formDataToSend),
-        headers: {
-          "Content-Type": "application/json"
-        }
+        body: formDataToSend
       });
 
       if (!response.ok) {

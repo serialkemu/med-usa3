@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
 
-const reportSchema = new mongoose.Schema({
-  audioUrl: {
-    type: String,
-    required: true
-  },
-  videoUrl: {
-    type: String,
-    required: true
-  },
+const liveReportSchema = new mongoose.Schema({
+  storyVideoUrl: String,
+  storyAudioUrl: String,
+  reportedAt: {
+    type: Date,
+    default: Date.now
+  }
   // Add other fields as needed for your report model
-}, { timestamps: true });
+});
 
-const LiveReport = mongoose.model('LiveReport', reportSchema);
+const LiveReport = mongoose.model('LiveReport', liveReportSchema);
 
 module.exports = LiveReport;

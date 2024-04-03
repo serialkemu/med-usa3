@@ -3,34 +3,35 @@ const mongoose = require('mongoose');
 const witnessCaseSchema = new mongoose.Schema({
   victimName: {
     type: String,
-    required: true
+    // required: true
   },
   abuserName: {
     type: String,
-    required: true
+    // required: true
   },
   location: {
     type: String,
-    required: true
+    // required: true
   },
-  typeOfAbuse: {
+  storyText: {
     type: String,
-    required: true
-  },
-  urgency: {
+    // required: true
+  },urgency: {
     type: Number,
     min: 1,
     max: 5,
-    required: true
+    // required: true
   },
-  backgroundStory: {
-    type: String  // Assuming storing background story as text
-  },
-  mediaEvidence: [String],
+  storyVideoUrl: String,
+  storyAudioUrl: String,
+  mediaEvidence: String,
   reportedAt: {
     type: Date,
-  },
+    default: Date.now
+  }
 });
+
+  
 
 const WitnessCase = mongoose.model('Witness_Case', witnessCaseSchema);
 

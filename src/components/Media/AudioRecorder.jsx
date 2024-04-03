@@ -29,6 +29,8 @@ const AudioRecorder = ({ onStopRecording }) => {
     const audioURL = URL.createObjectURL(audioBlob);
     console.log("Recorded audio URL:", audioURL);
     if (typeof onStopRecording === 'function') {
+      console.log("Calling onStopRecording with URL:", audioURL); // Add this line
+
       onStopRecording(audioURL);
     }
   };
