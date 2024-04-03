@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import AudioRecorder from '../Media/AudioRecorder';
-import VideoMedia from '../Media/VideoMedia'
+import VideoRecorder from '../Media/VideoMedia';
+
+
+
 
 const VictimForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    victimName:"",
+    victimName: "",
     abuserName: "",
     location: "",
     storyText: "",
-    storyVideo: null,
-    storyAudio: null,
+    storyVideoUrl: null,
+    storyAudioUrl: null,
     mediaEvidence: null
   });
 
@@ -23,50 +26,69 @@ const VictimForm = ({ onSubmit }) => {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleRecordingComplete = (blob) => {
-    setFormData({ ...formData, storyVideo: blob });
+  const handleVideoRecordingComplete = (videoUrl) => {
+    console.log("Video recording complete:", videoUrl);
+    setFormData({ ...formData, storyVideoUrl: videoUrl });
+  };
+
+  const handleAudioRecordingComplete = (audioUrl) => {
+    console.log("Audio recording complete:", audioUrl);
+    setFormData({ ...formData, storyAudioUrl: audioUrl });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
+      console.log("Form data before submission:", formData);
+
+      const formDataToSend = {
+        victimName: formData.victimName || '',
+        abuserName: formData.abuserName || '',
+        location: formData.location || '',
+        storyText: formData.storyText || '',
+        storyVideoUrl: formData.storyVideoUrl || null,
+        storyAudioUrl: formData.storyAudioUrl || null,
+        mediaEvidence: formData.mediaEvidence || null
+      };
+  
+      console.log("Form data to send:", formDataToSend);
+  
+      const response = await fetch("http://localhost:5001/cases/victimCase", {
+        method: "POST",
+        body: JSON.stringify(formDataToSend),
+        headers: {
+          "Content-Type": "application/json"
+        }
       });
 
-      const response = await fetch('http://localhost:5001/cases/victimCase', {
-        method: 'POST',
-        body: formDataToSend
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Success:', responseData);
-        setFormData({
-          abuserName: '',
-          location: '',
-          storyText: '',
-          storyVideo: null,
-          storyAudio: null,
-          mediaEvidence: null
-        });
-      } else {
-        console.error('Error:', response.statusText);
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
       }
+
+      console.log("Form submitted successfully!");
+      // Reset form data
+      setFormData({
+        victimName: "",
+        abuserName: "",
+        location: "",
+        storyText: "",
+        storyVideoUrl: null,
+        storyAudioUrl: null,
+        mediaEvidence: null
+      });
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error('Error submitting form:', error.message);
     }
-  }
+  };
 
   return (
     <div className='container p-5 m-3'>
       <div>
         <h3 className="text-center">Victim's Reporting Form</h3>
       </div>
-      <form onSubmit={handleSubmit} className='m-3 p-4'>
-      <div className="input-group mb-3">
+      <form onSubmit={handleSubmit} className='m-3 p-4' encType="multipart/form-data">
+        <div className="input-group mb-3">
           <span className="input-group-text" id="abuserName">Your Name</span>
           <input type="text" name="victimName" className="form-control" placeholder="" aria-label="victimName" value={formData.victimName} onChange={handleChange} aria-describedby="basic-addon1" />
         </div>
@@ -79,24 +101,29 @@ const VictimForm = ({ onSubmit }) => {
           <input type="text" name="location" className="form-control" placeholder="Location" aria-label="sgbvLocation" value={formData.location} onChange={handleChange} aria-describedby="basic-addon1" />
         </div>
         <div>
-          <h4 className="text-center">Tell your Story In Anyway you want</h4>
+          <h4 className="text-center">Tell your Story In Any way you want</h4>
           <hr/>
         </div>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon1">Tell your your story</span>
           <textarea name="storyText" className="form-control" aria-label="With textarea" value={formData.storyText} onChange={handleChange}></textarea>
         </div>
-        <div className='border border-2 m-2' >
-          <AudioRecorder onChange={handleFileChange} />
+        <div className='border border-2 m-2'>
+          <AudioRecorder onStopRecording={handleAudioRecordingComplete} />
         </div>
         <div className='border border-2 m-2'>
-          <VideoMedia onRecordingComplete={handleRecordingComplete} />
+          <VideoRecorder onStopRecording={handleVideoRecordingComplete} />
         </div>
         <div className="input-group mt-3">
           <label className="input-group-text" htmlFor="inputGroupFile01">Upload any media evidence</label>
           <input type="file" name="mediaEvidence" className="form-control" id="inputGroupFile01" onChange={handleFileChange} />
         </div>
-        <button className='btn btn-secondary mt-2' type="submit">Submit</button>
+        <button
+          className='btn btn-secondary mt-2'
+          type="submit"
+        >
+          Submit
+        </button>
       </form>
     </div>
   );

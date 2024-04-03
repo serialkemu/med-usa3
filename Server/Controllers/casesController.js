@@ -1,22 +1,27 @@
 const asyncErrorHandler = require('../Utils/asyncErrorHandler');
 const VictimCase = require('../Models/victimCaseModel');
 const WitnessCase = require('../Models/witnessCaseModel');
+const LiveReport = require('../Models/liveReportingModel'); // Import your Mongoose model
 
-exports.victimCaseEndpoint = asyncErrorHandler(async (req, res) => {
+exports.victimCaseEndpoint = async (req, res) => {
   try {
-    const { userName, abuserName, typeOfAbuse, location, storyText } = req.body;
+    const { victimName, abuserName, location, storyText, storyVideoUrl, storyAudioUrl } = req.body;
+    const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
+    const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
 
-    const mediaEvidenceFiles = req.files || [];
-    const mediaEvidencePaths = mediaEvidenceFiles.map(file => file.path);
-
+    console.log('Received form data:', req.body);
+    console.log('Received file:', mediaEvidenceFile);
+    
+    // Add the `mediaEvidencePath` field to the `VictimCase` object
     const victimCase = await VictimCase.create({
-      userName,
+      victimName,
       abuserName,
-      typeOfAbuse,
       location,
       storyText,
-      mediaEvidence: mediaEvidencePaths,
-      reportedAt: currentTime.toISOString(), 
+      storyVideoUrl,
+      storyAudioUrl,
+      mediaEvidence: mediaEvidencePath,
+      reportedAt: new Date().toISOString(),
     });
 
     console.log(victimCase);
@@ -37,8 +42,7 @@ exports.victimCaseEndpoint = asyncErrorHandler(async (req, res) => {
       message: 'Internal server error. ' + error.message
     });
   }
-});
-
+};
 exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
   try {
     const { victimName, abuserName, location, typeOfAbuse, urgency, backgroundStory } = req.body;
@@ -77,7 +81,7 @@ exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
   }
 });
 
-exports.viewVictimCases = async(req, res) => {
+exports.viewVictimCases = asyncErrorHandler(async(req, res) => {
   try{
     const victimCases = await VictimCase.find();
 
@@ -94,9 +98,9 @@ exports.viewVictimCases = async(req, res) => {
       message: `An error occurred while trying to fetch victim cases ` + error.message,
   })
 }
-}
+});
 
-exports.viewWitnessCases = async(req, res) =>{
+exports.viewWitnessCases = asyncErrorHandler(async(req, res) =>{
   try{
     const witnessCases = await WitnessCase.find();
 
@@ -113,4 +117,30 @@ exports.viewWitnessCases = async(req, res) =>{
       message: `An error occurred while trying to fetch witness cases ` + error.message,
   })
 }
-}
+});
+
+exports.liveReport = asyncErrorHandler(async (req, res) => {
+  try {
+    // Extract audioUrl and videoUrl from the request body
+    const { audioUrl, videoUrl } = req.body;
+    // Create a new report document using your Mongoose model
+    const newReport = new LiveReport({
+      audioUrl,
+      videoUrl
+      // Add other fields as needed
+    });
+    // Save the report to the database
+    await newReport.save();
+    // Respond with success message
+    return res.status(201).json({
+      status: 'Success',
+      message: 'Report saved successfully'
+    });
+  } catch (error) {
+    console.error('Error saving report:', error);
+    return res.status(500).json({
+      status: 'Fail',
+      message: 'Internal server error. ' + error.message
+    });
+  }
+});
