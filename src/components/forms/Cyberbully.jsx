@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const CyberbullyForm= () => {
+const CyberbullyForm = () => {
   const [formData, setFormData] = useState({
     bullyName: '',
     bullyLink: '',
@@ -23,16 +23,36 @@ const CyberbullyForm= () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you can send the form data to your backend or do any other necessary actions
-    console.log(formData);
-    // Reset the form after submission if needed
-    setFormData({
-      bullyName: '',
-      bullyLink: '',
-      mediaEvidence: null
-    });
+    
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('bullyName', formData.bullyName);
+      formDataToSend.append('bullyLink', formData.bullyLink);
+      formDataToSend.append('mediaEvidence', formData.mediaEvidence);
+
+      const response = await fetch('http://example.com/submit', {
+        method: 'POST',
+        body: formDataToSend
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form data');
+      }
+
+      // Reset the form after successful submission
+      setFormData({
+        bullyName: '',
+        bullyLink: '',
+        mediaEvidence: null
+      });
+
+      alert('Form submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting form:', error.message);
+      alert('Failed to submit form data. Please try again.');
+    }
   };
 
   return (

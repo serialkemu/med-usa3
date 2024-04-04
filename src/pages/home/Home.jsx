@@ -6,6 +6,15 @@ import { useDrag } from 'react-use-gesture';
 import styles from './style.module.css';
 import {useTransition,useSpring,useChain,config,animated as animatedRS,useSpringRef,} from '@react-spring/web';
 import data from './data';
+import Information from '../../components/cards/Information';
+import firstcard from '../../assets/images/firstcard.png'
+import  secondcard from '../../assets/images/secondcard.png'
+import  thirdcard from '../../assets/images/thirdcard.png'
+import  fourthcard from '../../assets/images/fourthcard.png'
+import  fifthcard from '../../assets/images/fifthcard.png'
+import abuser1 from '../../assets/images/abuser1.png'
+
+
 
 const HomeMid = ({ iconMid, titleMid, desMid, refMid }) => {
   return (
@@ -73,12 +82,12 @@ function SpringAnimation() {
 }
 
 const cards = [
-  'https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_06_Lovers.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg',
+  abuser1,
+  fifthcard,
+  fourthcard,
+  thirdcard,
+  secondcard,
+  firstcard,
 ];
 
 const to = (i) => ({
@@ -144,6 +153,8 @@ function Deck() {
   );
 }
 
+
+
 const Home = () => {
   const [open, set] = useState(false)
 
@@ -159,8 +170,8 @@ const Home = () => {
               <div className=" col-sm-12 col-mb-4 text-primary">
                 <h2>MUT SGBV Hotline Free Confidnetial.24/7. </h2>{' '}
               </div>
-              <div className=" col-sm-6 col-mb-4 text-center border border-primary-subtle rounded-3 mt-5 text-primary">
-                <button className="btn  p-4">
+              <div className=" col-sm-6 col-mb-4 text-center text-primary p-4   mt-3">
+                <button className="btn  border border-primary-subtle rounded-3 mt-5 ">
                   <p className="h4 text-primary">
                     Toll Free Line
                     <Link to="tel:0800724635" className="m-4">
@@ -170,8 +181,8 @@ const Home = () => {
                   
                 </button>
               </div>
-              <div className=" col-sm-6 col-mb-4 text-center border border-primary-subtle rounded-3 mt-5 ">
-                <button className="btn btn-secondary p-4">
+              <div className=" col-sm-6 col-mb-4 text-center ">
+                <button className="btn btn-secondary p-4 border border-primary-subtle rounded-3 mt-5 ">
                   <p className="h4">
                     <Link to="/report" className="text-primary">
                       Get Help
@@ -182,19 +193,17 @@ const Home = () => {
             </div>
           </div>
           <div className='d-flex justify-content-center'>
-            <div  className='m-2 row p-5 border' style={{width:'100rem', height:'70rem'}} >
-              <div className='col-mb-6 col-sm-12 border m-4'>
+            <div  className='m-4 row p-5 border' style={{width:'70rem', height:'60rem'}} >
+            <div className="m-2">
+             <Information/>
+            </div>
+            <div className='col-mb-6 col-sm-12 border m-4'>
               <Deck/>
               </div>
-              <div className='col-mb-6 col-sm-12 border m-4 ' style={{height:'20rem'}}>
-            < SpringAnimation/>
+       
+
             </div>
-            </div>
-            
-            
-            <div className="m-2">
-             
-            </div>
+  
           </div>
       </div>
     </div>
