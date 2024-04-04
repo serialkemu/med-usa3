@@ -12,10 +12,10 @@ const Admin = () => {
     async function fetchLiveReportsData() {
       try {
         const response = await fetch('http://localhost:5001/admin/liveReports');
-        const liveReports = await response.json();
+        const updatedReports = await response.json();
         setLiveReportsData(
-          liveReports.length
-            ? liveReports.map((report) => <LiveReportCard {...report} />)
+          updatedReports.length
+            ? updatedReports.map((report) => <LiveReportCard {...report} />)
             : null
         );
       } catch (error) {

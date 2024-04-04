@@ -17,8 +17,8 @@ const victimFormSchema = new mongoose.Schema({
     type: String,
     // required: true
   },
-  storyVideoUrl: String,
-  storyAudioUrl: String,
+  storyVideo: String,
+  storyAudio: String,
   mediaEvidence: String,
   reportedAt: {
     type: Date,

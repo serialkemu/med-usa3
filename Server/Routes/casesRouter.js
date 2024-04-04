@@ -1,11 +1,13 @@
 const express = require('express');
 const casesController = require('../Controllers/casesController');
 const multer = require('multer');
+const path = require('path'); // Import the path module
 const router = express.Router();
 
-const witnessStorage = multer.diskStorage({
+const audioStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './Uploads/witnesses');
+    const destinationPath = './Uploads/audio'.replace(/\\/g, '/');
+    cb(null, destinationPath);
   },
   filename: function (req, file, cb) {
     // Generate a unique filename to avoid overwriting
@@ -17,9 +19,10 @@ const witnessStorage = multer.diskStorage({
   }
 });
 
-const victimStorage = multer.diskStorage({
+const mediaStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './Uploads/victims');
+    const destinationPath = './Uploads/media'.replace(/\\/g, '/');
+    cb(null, destinationPath);
   },
   filename: function (req, file, cb) {
     // Generate a unique filename to avoid overwriting
@@ -31,17 +34,19 @@ const victimStorage = multer.diskStorage({
   }
 });
 
-const uploadWitness = multer({ storage: witnessStorage });
-const uploadVictim = multer({ storage: victimStorage });
-
-router.route('/witnessCase').post(
-  uploadWitness.single('mediaEvidence'),
-  casesController.witnessCaseEndpoint
-);
+const uploadAudio = multer({ storage: audioStorage });
+const uploadMedia = multer({ storage: mediaStorage });
 
 router.route('/victimCase').post(
-  uploadVictim.single('mediaEvidence'),
+  uploadAudio.single('storyAudio'),
+  uploadMedia.single('mediaEvidence'),
   casesController.victimCaseEndpoint
+);
+
+// Example routes using multer middleware
+router.route('/witnessCase').post(
+  uploadMedia.single('mediaEvidence'),
+  casesController.witnessCaseEndpoint
 );
 
 router.route('/saveLiveReport').post(casesController.saveLiveReport);

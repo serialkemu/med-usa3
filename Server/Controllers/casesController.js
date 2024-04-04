@@ -5,21 +5,31 @@ const LiveReport = require('../Models/liveReportingModel'); // Import your Mongo
 
 exports.victimCaseEndpoint = async (req, res) => {
   try {
-    const { victimName, abuserName, location, storyText, storyVideoUrl, storyAudioUrl } = req.body;
+    const {
+      victimName,
+      abuserName,
+      location,
+      storyText,
+    } = req.body;
+    const storyAudio = req.file
+    const storyAudioPath = storyAudio ? storyAudio.path : null;
+
     const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
     const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
 
     console.log('Received form data:', req.body);
-    console.log('Received file:', mediaEvidenceFile);
-    
-    // Add the `mediaEvidencePath` field to the `VictimCase` object
+    console.log('Received audio file:', storyAudio);
+    console.log('Received media file:', mediaEvidenceFile);
+
+
+    // Add the `storyAudioUrl` and `mediaEvidencePath` fields to the `VictimCase` object
     const victimCase = await VictimCase.create({
       victimName,
       abuserName,
       location,
       storyText,
-      storyVideoUrl,
-      storyAudioUrl,
+      storyVideo,
+      storyAudio: storyAudioPath,
       mediaEvidence: mediaEvidencePath,
       reportedAt: new Date().toISOString(),
     });
@@ -29,7 +39,7 @@ exports.victimCaseEndpoint = async (req, res) => {
     return res.status(201).json({
       status: 'Success',
       data: {
-        victimCase
+        victimCase,
       },
     });
   } catch (error) {
@@ -45,7 +55,7 @@ exports.victimCaseEndpoint = async (req, res) => {
 };
 exports.witnessCaseEndpoint = asyncErrorHandler(async (req, res) => {
   try {
-    const { victimName, abuserName, location, typeOfAbuse, urgency, storyText, storyVideoUrl, storyAudioUrl } = req.body;
+    const { victimName, abuserName, location, typeOfAbuse, urgency, storyText, storyVideo, storyAudioUrl } = req.body;
 
     const mediaEvidenceFile = req.file; // Assuming single file upload for media evidence
     const mediaEvidencePath = mediaEvidenceFile ? mediaEvidenceFile.path : null;
@@ -161,12 +171,30 @@ exports.saveLiveReport = asyncErrorHandler(async (req, res) => {
 exports.getLiveReports = asyncErrorHandler(async (req, res) => {
   try {
     const liveReports = await LiveReport.find({});
+    console.log('liveReports:', liveReports);
+
     if (liveReports.length === 0) {
-      return res.status(400).send('No live reports found.');
+      return res.status(400).json({ message: 'No live reports found.' });
     }
 
-    return res.status(200).send(liveReports);
+    const updatedReports = liveReports.map((report) => {
+      const { storyAudioUrl, storyVideoUrl, ...rest } = report;
+    
+      const audioUrl = storyAudioUrl?.replace(/\\/g, '/') ?? storyAudioUrl;
+      const videoUrl = storyVideoUrl?.replace(/\\/g, '/') ?? storyVideoUrl;
+    
+      return {
+        ...rest,
+        audioUrl,
+        videoUrl
+      };
+    });
+
+    console.log('updatedReports:', updatedReports);
+
+    return res.status(200).json(updatedReports);
   } catch (error) {
-    return res.status(500).send('Server error.');
+    console.error('Error fetching live reports:', error.message);
+    return res.status(500).json({ message: 'Server error.' });
   }
 });
