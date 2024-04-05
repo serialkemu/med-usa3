@@ -35,26 +35,40 @@ const VictimForm = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('victimName', formData.victimName || '');
       formDataToSend.append('abuserName', formData.abuserName || '');
       formDataToSend.append('location', formData.location || '');
       formDataToSend.append('storyText', formData.storyText || '');
-      formDataToSend.append('storyVideoUrl', formData.storyVideoUrl || '');
-      formDataToSend.append('storyAudioUrl', formData.storyAudioUrl || '');
-      formDataToSend.append('mediaEvidence', formData.mediaEvidence);
-
+      formDataToSend.append('mediaEvidence', formData.mediaEvidence || ''); // Append media evidence file
+  
+      // If story video URL is a Blob (i.e., video recording), append it directly
+      if (formData.storyVideoUrl instanceof Blob) {
+        formDataToSend.append('storyVideo', formData.storyVideoUrl, 'video.webm');
+      } else {
+        // If story video URL is a string (i.e., video URL), append it as a regular field
+        formDataToSend.append('storyVideoUrl', formData.storyVideoUrl || '');
+      }
+  
+      // If story audio URL is a Blob (i.e., audio recording), append it directly
+      if (formData.storyAudioUrl instanceof Blob) {
+        formDataToSend.append('storyAudio', formData.storyAudioUrl, 'audio.wav');
+      } else {
+        // If story audio URL is a string (i.e., audio URL), append it as a regular field
+        formDataToSend.append('storyAudioUrl', formData.storyAudioUrl || '');
+      }
+  
       const response = await fetch("http://localhost:5001/cases/victimCase", {
         method: "POST",
         body: formDataToSend
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to submit form data");
       }
-
+  
       console.log("Form submitted successfully!");
       // Reset form data
       setFormData({

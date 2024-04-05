@@ -6,7 +6,6 @@ const VideoRecorder = ({ onStopRecording }) => {
   const videoRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const [videoChunks, setVideoChunks] = useState([]);
-  const divRef = useRef(null);
 
   const handleStartRecording = async (e) => {
     e.preventDefault();
@@ -39,10 +38,8 @@ const VideoRecorder = ({ onStopRecording }) => {
 
   const handleSaveRecording = () => {
     const videoBlob = new Blob(videoChunks, { type: "video/webm" });
-    const videoURL = URL.createObjectURL(videoBlob);
-    console.log("Recorded video URL:", videoURL);
     if (typeof onStopRecording === 'function') {
-      onStopRecording(videoURL);
+      onStopRecording(videoBlob);
     }
   };
 
@@ -91,7 +88,7 @@ const VideoRecorder = ({ onStopRecording }) => {
         <button onClick={handleStopRecording}>Stop recording</button>
       )}
       {mediaStream && (
-        <div ref={divRef}>
+        <div>
           <video ref={videoRef} autoPlay />
         </div>
       )}
