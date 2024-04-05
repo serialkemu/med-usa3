@@ -2,89 +2,86 @@ import React, { useState } from 'react';
 import AudioRecorder from '../Media/AudioRecorder';
 import VideoRecorder from '../Media/VideoMedia';
 
-const VictimForm = ({ onSubmit }) => {
+const VictimForm = () => {
   const [formData, setFormData] = useState({
     victimName: "",
     abuserName: "",
     location: "",
     storyText: "",
-    storyVideoUrl: null,
-    storyAudioUrl: null,
+    storyAudio: null,
+    storyVideo: null,
     mediaEvidence: null
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("Name:", name);
+    console.log("Value:", value);
     setFormData({ ...formData, [name]: value });
   };
-
+  
   const handleFileChange = (e) => {
     const { name, files } = e.target;
+    console.log("Name:", name);
+    console.log("Files:", files);
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleVideoRecordingComplete = (videoUrl) => {
-    console.log("Video recording complete:", videoUrl);
-    setFormData({ ...formData, storyVideoUrl: videoUrl });
-  };
+  // const handleVideoRecordingComplete = (videoBlob) => {
+  //   console.log("Video recording complete:", videoBlob);
+  //   setFormData({ ...formData, storyVideo: videoBlob });
+  // };
 
-  const handleAudioRecordingComplete = (audioUrl) => {
-    console.log("Audio recording complete:", audioUrl);
-    setFormData({ ...formData, storyAudioUrl: audioUrl });
+  const handleAudioRecordingComplete = (audioBlob) => {
+    if (audioBlob.size > 0) {
+      console.log("Audio recording complete:", audioBlob);
+      setFormData({ ...formData, storyAudio: audioBlob });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('victimName', formData.victimName || '');
       formDataToSend.append('abuserName', formData.abuserName || '');
       formDataToSend.append('location', formData.location || '');
       formDataToSend.append('storyText', formData.storyText || '');
-      formDataToSend.append('mediaEvidence', formData.mediaEvidence || ''); // Append media evidence file
-  
-      // If story video URL is a Blob (i.e., video recording), append it directly
-      if (formData.storyVideoUrl instanceof Blob) {
-        formDataToSend.append('storyVideo', formData.storyVideoUrl, 'video.webm');
-      } else {
-        // If story video URL is a string (i.e., video URL), append it as a regular field
-        formDataToSend.append('storyVideoUrl', formData.storyVideoUrl || '');
-      }
-  
-      // If story audio URL is a Blob (i.e., audio recording), append it directly
-      if (formData.storyAudioUrl instanceof Blob) {
-        formDataToSend.append('storyAudio', formData.storyAudioUrl, 'audio.wav');
-      } else {
-        // If story audio URL is a string (i.e., audio URL), append it as a regular field
-        formDataToSend.append('storyAudioUrl', formData.storyAudioUrl || '');
-      }
-  
-      const response = await fetch("http://localhost:5001/cases/victimCase", {
-        method: "POST",
-        body: formDataToSend
+
+      formDataToSend.append('storyAudio', formData.storyAudio || '');
+      formDataToSend.append('storyVideo', formData.storyVideo || '');
+      formDataToSend.append('mediaEvidence', formData.mediaEvidence || '');
+      
+      console.log(formDataToSend)
+      const response = await fetch('http://localhost:5001/cases/victimCase', {
+        method: 'POST',
+        body: formDataToSend,
+
       });
   
       if (!response.ok) {
-        throw new Error("Failed to submit form data");
+        throw new Error('Failed to submit form data');
       }
-  
-      console.log("Form submitted successfully!");
+
+
+      console.log('Form submitted successfully!');
+
       // Reset form data
       setFormData({
-        victimName: "",
-        abuserName: "",
-        location: "",
-        storyText: "",
-        storyVideoUrl: null,
-        storyAudioUrl: null,
-        mediaEvidence: null
+        victimName: '',
+        abuserName: '',
+        location: '',
+        storyText: '',
+        storyAudio: null,
+        storyVideo: null,
+        mediaEvidence: null,
       });
     } catch (error) {
       console.error('Error submitting form:', error.message);
     }
   };
-
+  
   return (
     <div className='container p-5 m-3'>
       <div>
@@ -112,10 +109,10 @@ const VictimForm = ({ onSubmit }) => {
           <textarea name="storyText" className="form-control" aria-label="With textarea" value={formData.storyText} onChange={handleChange}></textarea>
         </div>
         <div className='border border-2 m-2'>
-          <AudioRecorder onStopRecording={handleAudioRecordingComplete} />
+          <AudioRecorder onStopRecording={handleAudioRecordingComplete} name='storyAudio' onChange={handleFileChange}/>
         </div>
         <div className='border border-2 m-2'>
-          <VideoRecorder onStopRecording={handleVideoRecordingComplete} />
+          {/* <VideoRecorder onStopRecording={handleVideoRecordingComplete} name='storyVideo' /> */}
         </div>
         <div className="input-group mt-3">
           <label className="input-group-text" htmlFor="inputGroupFile01">Upload any media evidence</label>

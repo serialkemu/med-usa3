@@ -6,26 +6,7 @@ const AudioRecorder = () => {
   const mediaRecorderRef = useRef(null);
   const [audioChunks, setAudioChunks] = useState([]);
 
-  const handleStartRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setMediaStream(stream);
-      setIsRecording(true);
-    } catch (error) {
-      console.error("Error accessing media devices:", error);
-    }
-  };
-
-  const handleStopRecording = () => {
-    setIsRecording(false);
-
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
-    }
-  };
-
-  useEffect(() => {
-    if (!isRecording || !mediaStream) return;
+  const startRecording = () => {
 
     const chunks = [];
 
@@ -40,28 +21,57 @@ const AudioRecorder = () => {
 
     mediaRecorderRef.current.onstop = () => {
       const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-      const audioUrl = URL.createObjectURL(audioBlob);
 
-      // Create a temporary anchor element to trigger the download
-      const downloadLink = document.createElement("a");
-      downloadLink.href = audioUrl;
+      console.log("Recorded audio blob:", audioBlob);
 
-      // Specify default filename and directory
-      downloadLink.download = "/home/kimunto/projects/Medu/med-usa/Server/Uploads/recorded_audio.wav";
-      downloadLink.click();
+      if (typeof onStopRecording === "function") {
+        console.log("Calling onStopRecording with blob:", audioBlob);
+        onStopRecording(audioBlob);
+      }
 
-      // Clean up resources
-      URL.revokeObjectURL(audioUrl);
     };
 
-    mediaRecorderRef.current.start();
+    setTimeout(() => {
+      mediaRecorderRef.current.start();
+    }, 500); // Start the MediaRecorder after a 500ms delay
+};
 
-    return () => {
+  const handleStartRecording = async (e) => {
+    e.preventDefault();
+
+    if (!mediaStream) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setMediaStream(stream);
+      } catch (error) {
+        console.error("Error accessing media devices:", error);
+        return;
+      }
+    }
+
+    setIsRecording(true);
+
+    if (isRecording && mediaStream) {
+      startRecording();
+    }
+  };
+
+  const handleStopRecording = (
+) => {
+    setIsRecording(false);
+  };
+
+  useEffect(() => {
+    if (!isRecording || !mediaStream) {
+      console.log("Stopping MediaRecorder due to prop changes");
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
         mediaRecorderRef.current.stop();
       }
-    };
-  }, [isRecording, mediaStream, audioChunks]);
+
+      return;
+    }
+  }, [isRecording, mediaStream]);
+
 
   return (
     <div>
