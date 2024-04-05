@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const AudioRecorder = ({ onStopRecording }) => {
+const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaStream, setMediaStream] = useState(null);
   const mediaRecorderRef = useRef(null);
   const [audioChunks, setAudioChunks] = useState([]);
 
-  const startRecording = (
-) => {
+  const startRecording = () => {
+
     const chunks = [];
 
     mediaRecorderRef.current = new MediaRecorder(mediaStream);
@@ -16,18 +16,19 @@ const AudioRecorder = ({ onStopRecording }) => {
       if (event.data.size > 0) {
         chunks.push(event.data);
         setAudioChunks([...chunks]);
-        console.log("Chunk array length:", chunks.length);
       }
     };
 
     mediaRecorderRef.current.onstop = () => {
       const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+
       console.log("Recorded audio blob:", audioBlob);
 
       if (typeof onStopRecording === "function") {
         console.log("Calling onStopRecording with blob:", audioBlob);
         onStopRecording(audioBlob);
       }
+
     };
 
     setTimeout(() => {
@@ -66,9 +67,11 @@ const AudioRecorder = ({ onStopRecording }) => {
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
         mediaRecorderRef.current.stop();
       }
+
       return;
     }
   }, [isRecording, mediaStream]);
+
 
   return (
     <div>

@@ -41,13 +41,14 @@ const VictimForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("reached handlesubmit")
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('victimName', formData.victimName || '');
       formDataToSend.append('abuserName', formData.abuserName || '');
       formDataToSend.append('location', formData.location || '');
       formDataToSend.append('storyText', formData.storyText || '');
+
       formDataToSend.append('storyAudio', formData.storyAudio || '');
       formDataToSend.append('storyVideo', formData.storyVideo || '');
       formDataToSend.append('mediaEvidence', formData.mediaEvidence || '');
@@ -56,13 +57,16 @@ const VictimForm = () => {
       const response = await fetch('http://localhost:5001/cases/victimCase', {
         method: 'POST',
         body: formDataToSend,
-      });
 
+      });
+  
       if (!response.ok) {
         throw new Error('Failed to submit form data');
       }
 
+
       console.log('Form submitted successfully!');
+
       // Reset form data
       setFormData({
         victimName: '',

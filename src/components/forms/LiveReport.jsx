@@ -62,7 +62,7 @@ const LiveReportForm = ({ onSubmit }) => {
       </div>
       <ReportingInst />
       <div className="text-center">
-        <button type="submit" className="btn btn-primary">Submit Report</button>
+        <button type="submit" className="btn btn-secondary">Submit Report</button>
       </div>
     </form>
   );
