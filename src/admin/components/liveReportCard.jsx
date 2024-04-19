@@ -48,16 +48,14 @@ const LiveReportCard = ({ _id, audioUrl, videoUrl, reportedAt }) => {
       <div className="card-body">
         <p><strong>Reported At (EAT):</strong> {reportedAtEAT}</p>
         <div>
-          {console.log(audioUrl)}
-        
           <audio
             controls
-            src={`Server/${audioUrl}`}// Set audio source dynamically
+            src={audioUrl} // Set audio source dynamically
             type="audio/mpeg"
             ref={audioRef}
           >
             Your browser does not support the audio element.
-          </audio>{console.log(`Server/${audioUrl}`)}
+          </audio>
           <button className="download-btn" onClick={handleAudioDownload}>
             Download Audio
           </button>
@@ -65,7 +63,7 @@ const LiveReportCard = ({ _id, audioUrl, videoUrl, reportedAt }) => {
         <div>
           <video
             controls
-            src={`/Server/${videoUrl}`} // Set video source dynamically
+            src={videoUrl} // Set video source dynamically
             type="video/mp4"
             ref={videoRef}
           >
