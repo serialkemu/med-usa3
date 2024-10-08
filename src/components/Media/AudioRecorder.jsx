@@ -76,7 +76,7 @@ const AudioRecorder = () => {
   return (
     <div>
       <button onClick={handleStartRecording} disabled={isRecording}>
-        Start recording
+        Start Audio Recording
       </button>
       {isRecording && <span>Recording...</span>}
       {isRecording && (

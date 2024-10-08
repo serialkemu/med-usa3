@@ -8,7 +8,7 @@ const Footer = () => {
     <div className="bg-info row " style={{height:"20rem"}}>
       <hr className='text-secondary'></hr>
       <div className=" col-6">
-        <form action="post" style={{width:"25rem"}} className=''> 
+        <form action="post" style={{width:"30rem"}} className='border p-2 m-2'> 
         <h4>Talk to us! Add your suggentions</h4>
           <div className='row m-2 '>
               <div className="form-floating col-6 ">

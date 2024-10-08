@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 
 
+
 const Education = () => {
   return (
     <div className='m-3 p-5' >
@@ -15,6 +16,11 @@ const Education = () => {
         Education
       </h1>
       </div>
+
+<div>
+
+</div>
+
       <div className="container d-flex justify-content-center mb-3">
   <div className="card m-3 responsvive-container" style={{ width: '70%' }}>
     <div className='mt-4'>

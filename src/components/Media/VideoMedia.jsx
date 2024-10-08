@@ -82,7 +82,7 @@ const VideoRecorder = ({ onStopRecording }) => {
   return (
     <div>
       <button onClick={handleStartRecording} disabled={isRecording}>
-        Start recording
+        Start Live Recording
       </button>
       {isRecording && (
         <button onClick={handleStopRecording}>Stop recording</button>

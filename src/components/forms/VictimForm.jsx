@@ -104,10 +104,7 @@ const VictimForm = () => {
           <h4 className="text-center">Tell your Story In Any way you want</h4>
           <hr/>
         </div>
-        <div className="input-group mb-3">
-          <span className="input-group-text" id="basic-addon1">Tell your your story</span>
-          <textarea name="storyText" className="form-control" aria-label="With textarea" value={formData.storyText} onChange={handleChange}></textarea>
-        </div>
+
         <div className='border border-2 m-2'>
           <AudioRecorder onStopRecording={handleAudioRecordingComplete} name='storyAudio' onChange={handleFileChange}/>
         </div>
