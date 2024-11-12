@@ -34,7 +34,7 @@ const Home = () => {
       </div>
 
       <div className="d-flex justify-content-center " >
-        <div className="row p-5 " style={{ height: '70rem',width: '70rem' }} >
+        <div className="row p-2 " style={{ height: '45rem',width: '70rem' }} >
             <Information />
         </div>
       </div>

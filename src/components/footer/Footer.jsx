@@ -1,50 +1,57 @@
 import React from 'react';
-import twitter from"../../assets/images/twitter.png"
-import instagram from "../../assets/images/instagram.png"
-import linkedin from "../../assets/images/linkedin.png"
+import { FaInstagram, FaTwitter, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
 
 const Footer = () => {
   return (
-    <div className="bg-info row " style={{height:"20rem"}}>
-      <hr className='text-secondary'></hr>
-      <div className=" col-6">
-        <form action="post" style={{width:"30rem"}} className='border p-2 m-2'> 
-        <h4>Talk to us! Add your suggentions</h4>
-          <div className='row m-2 '>
-              <div className="form-floating col-6 ">
-              <input type="" className="form-control bg-primary border border-secondary" id="" placeholder=""/>
-              <label htmlFor="" className=''>First Name</label>
-              </div>
-              <div className="form-floating col-6">
-              <input type="" className="form-control bg-primary border border-secondary" id="" placeholder=""/>
-              <label htmlFor="">Last Name</label>
-              </div>
+    <div className="bg-dark text-light py-5">
+      <div className="container">
+        <div className="row">
+          {/* Contact Us Section */}
+          <div className="col-md-6 mb-4">
+            <h4>Talk to us! Add your suggestions</h4>
+            <hr className="border-light" />
+            <p>If you have any ideas or feedback, feel free to reach out to us. We'd love to hear from you!</p>
           </div>
-        <div class="form-floating m-3">
-          <input type="email" className="form-control bg-primary border border-secondary" id="femail" placeholder="name@example.com"/>
-            <label htmlFor="femail">Email address</label>
+
+          {/* Social Media and Contact Section */}
+          <div className="col-md-6">
+            <div className="d-flex justify-content-start mb-3">
+              {/* Social Media Icons */}
+              <a href="#" className="text-light me-4 icon-link">
+                <FaInstagram size={40} className="icon" />
+              </a>
+              <a href="#" className="text-light me-4 icon-link">
+                <FaTwitter size={40} className="icon" />
+              </a>
+              <a href="#" className="text-light me-4 icon-link">
+                <FaLinkedin size={40} className="icon" />
+              </a>
+              <a href="#" className="text-light me-4 icon-link">
+                <FaFacebook size={40} className="icon" />
+              </a>
             </div>
-            <div className="form-floating m-3">
-              <textarea className="form-control bg-primary border border-secondary" placeholder="Leave a comment here" id="Comment" ></textarea>
-              <label htmlFor="floatingTextarea">Comments</label>
+
+            {/* Location and Direct Contact */}
+            <div>
+              <h4>Our Location:</h4>
+              <p>Soweto, Nairobi</p>
+            </div>
+
+            <div>
+              <h4>Contact us directly:</h4>
+              <div className="mb-2">
+                <AiOutlinePhone size={30} className="me-2" />
+                <a href="tel:0718-158-400" className="text-light">0718-158-400</a>
               </div>
-        </form>
+              <div>
+                <AiOutlineMail size={30} className="me-2" />
+                <a href="mailto:info@usikimye.org" className="text-light">info@usikimye.org</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-     <div className='col-6 '>
-       <div className='m-3'>
-        <a href=''>
-          <img src={twitter} alt="..l" style={{height:"2rem"}} />
-        </a> 
-        </div>
-        <div className='m-3'>
-          <a href=''><img src={instagram} alt="" style={{height:"2rem"}} />
-        </a>
-        </div>
-        <div className='m-3'>
-          <a href=''><img src={linkedin} alt="" style={{height:"2rem"}} />
-        </a>
-        </div>
-     </div>  
     </div>
   );
 };

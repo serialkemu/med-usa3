@@ -8,7 +8,7 @@ $secondary: #6C2B91;
 $success: #BAD7DF;
 $info: #E1D6ED;
 $warning: #DFDFDF;
-$danger: #FFC4C3;
+$danger: #d60f0c;
 
 $gradient-colors: radial-gradient(circle at 7.5% 24%, rgb(237, 161, 193) 0%, rgb(250, 178, 172) 25.5%, rgb(190, 228, 210) 62.3%, rgb(215, 248, 247) 93.8%);
 
@@ -78,7 +78,7 @@ $gradient-colors: radial-gradient(circle at 7.5% 24%, rgb(237, 161, 193) 0%, rgb
 
 /* Bar.css */
 
-/* Wrapper for the icon */
+/* Wrapper for the icon  on the bar*/
 .icon-wrapper {
   background-color: rgba(0, 0, 0, 0.1); /* Dark background with opacity */
   padding: 1rem;
@@ -115,6 +115,24 @@ $gradient-colors: radial-gradient(circle at 7.5% 24%, rgb(237, 161, 193) 0%, rgb
   background-color: transparent;
   border-top: none;
 }
+
+/*footer icons */
+.icon-link .icon {
+  transition: color 0.3s ease;
+}
+
+.icon-link:hover .icon {
+  color: #5d3fd3; /* Dark purple on hover */
+}
+
+a {
+  text-decoration: none;
+}
+
+.icon {
+  color: #ffffff; /* Default color */
+}
+
 
 .card-body {
   flex-grow: 1;

@@ -20,8 +20,8 @@ const Info = ({ carTitle, carLink, cardis }) => {
 
 const Information = () => {
   return (
-    <div className="d-flex justify-content-center p-4">
-      <div className="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+    <div className="d-flex justify-content-center p-2">
+      <div className="row row-cols-1 row-cols-md-3 g-3 justify-content-center">
         {/* Info cards */}
         <Info
           carTitle="Warning Signs Of SGBV"
